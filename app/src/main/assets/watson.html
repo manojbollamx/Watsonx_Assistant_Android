@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Chat</title>
+</head>
+
+<body>
+<script>
+    let messages = [];
+    async function onLoad(instance) {
+        console.log("WebChat instance loaded!");
+        instance.on({ type: 'view:pre:change', handler: minHandler });
+        await instance.render();
+    }
+
+    function minHandler(event, instance) {
+        if (event.reason === 'mainWindowMinimized') {
+            const closeButton = document.querySelector('#WACContainer.WACContainer .WACHeader__CloseButton');
+            if (closeButton) {
+                // Check if Android object is available
+                if (window.Android) {
+                    console.log("Calling Android onCloseButtonClicked");
+                    Android.onCloseButtonClicked(); // Call Android method
+                } else {
+                    console.log("Android interface not found!");
+                }
+            }
+        }
+    }
+
+    window.watsonAssistantChatOptions = {
+        integrationID: "07b05ae0-7e2e-47d1-a309-d0f5b9915ac5",
+        region: "us-south",
+        serviceInstanceID: "9a3613d2-3ce6-4928-8eb6-4d659d87ae68",
+        onLoad: onLoad,
+        openChatByDefault: true,
+        hideCloseButton: true,
+        headerConfig: {
+            closeButtonIconType: 'min'
+        },
+    };
+
+    const scriptElement = document.createElement('script');
+    scriptElement.src = "https://cpd.ccca.ams1907.com/assistant/ups-wx-operands-wa/integrations/static/webchat/versions/" +
+        (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+    document.head.appendChild(scriptElement);
+</script>
+</body>
+
+</html>
